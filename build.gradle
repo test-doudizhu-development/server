@@ -70,12 +70,6 @@ bootJar {
 }
 
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
-    }
-}
-
 
 test {
     useJUnitPlatform()
