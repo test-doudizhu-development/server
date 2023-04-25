@@ -4,7 +4,6 @@ plugins {
     id 'java'
     id 'idea'
 //    id "org.sonarqube" version "3.5.0.2730"
-    id 'jacoco'
     id "org.sonarqube" version "3.5.0.2730"
 }
 
@@ -83,12 +82,6 @@ sonarqube {
         property "sonar.projectKey", "TODO"
         property "sonar.organization", "TODO"
         property "sonar.host.url", "TODO"
-    }
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
     }
 }
 
