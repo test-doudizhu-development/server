@@ -35,32 +35,3 @@
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
 #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 #        run: ./gradlew build sonarqube --info
-
-name: SonarCloud
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-jobs:
-  build:
-    name: Build and analyze
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Backend Repository
-        uses: actions/checkout@v3
-      - name: Install Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: zulu
-          java-version: 17
-      - name: Run Sonarcloud Analysis
-        uses: gradle/gradle-build-action@v2.1.4
-        with:
-          arguments: jacocoTestReport sonarqube --info
-          cache-disabled: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info
