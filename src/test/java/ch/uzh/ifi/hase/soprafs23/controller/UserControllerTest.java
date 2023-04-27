@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.controller.UserController;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.model.UserReqVo;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
@@ -21,10 +22,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-
-
-
-
 /**
  * UserControllerTest
  * This is a WebMvcTest which allows to test the UserController i.e. GET/POST
@@ -34,26 +31,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @MockBean
-    private UserService userService;
+  @MockBean
+  private UserService userService;
 
 
-    private String token;
+  private String  token;
 
-    private Gson gson = new Gson();
-        User user;
+  private Gson gson = new Gson();
+    User user;
 
     @BeforeEach
-    public void initUser(){
-        user = new User();
-        user.setName("Firstname Lastname");
-        user.setUsername("firstname@lastname");
-        user.setPassword("firstname@123");
-        user.setToken("1");
-        user.setStatus(UserStatus.OFFLINE);
+  public void initUser(){
+      user = new User();
+      user.setName("Firstname Lastname");
+      user.setUsername("firstname@lastname");
+      user.setPassword("firstname@123");
+      user.setToken("1");
+      user.setStatus(UserStatus.OFFLINE);
 
     }
 

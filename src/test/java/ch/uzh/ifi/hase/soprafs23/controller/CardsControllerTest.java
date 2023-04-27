@@ -2,6 +2,8 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.config.WebSocketConfigOne;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.controller.CardsController;
+import ch.uzh.ifi.hase.soprafs23.controller.RoomSync;
 import ch.uzh.ifi.hase.soprafs23.core.GameContext;
 import ch.uzh.ifi.hase.soprafs23.core.PokerCombination;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -64,7 +66,7 @@ class CardsControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        // Verify the resultS
+        // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         verify(mockRoomSync).push();
     }
@@ -73,11 +75,11 @@ class CardsControllerTest {
     void testAddUser() throws Exception {
         // Setup
         // Run the test
-        mockMvc.perform(post("/cards/addUser")
+         mockMvc.perform(post("/cards/addUser")
                         .param("roomCode", "0")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                //.andExpect(MockMvcResultMatchers.jsonPath("$.email").value("123456@qq.com"))
+//                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("123456@qq.com"))
                 .andDo(MockMvcResultHandlers.print()).andReturn();
     }
 

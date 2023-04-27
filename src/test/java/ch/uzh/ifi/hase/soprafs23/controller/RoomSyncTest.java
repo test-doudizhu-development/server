@@ -3,27 +3,31 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 import ch.uzh.ifi.hase.soprafs23.config.WebSocketConfigOne;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.controller.CardsController;
-import ch.uzh.ifi.hase.soprafs23.controller.GameSyncController;
+import ch.uzh.ifi.hase.soprafs23.controller.RoomSync;
 import ch.uzh.ifi.hase.soprafs23.core.GameContext;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
+import javax.websocket.Session;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static org.mockito.BDDMockito.given;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@WebMvcTest(GameSyncController.class)
-class GameSyncControllerTest {
-    GameSyncController gameSyncController = new GameSyncController();
+@WebMvcTest(RoomSync.class)
+class RoomSyncTest {
 
-    @MockBean
-    private UserService userService;
+    private RoomSync roomSyncUnderTest;
+
+    @BeforeEach
+    void setUp() {
+        roomSyncUnderTest = new RoomSync();
+        roomSyncUnderTest.setToken("1");
+
+    }
     User user;
     @BeforeEach
     public void initUser(){
@@ -38,25 +42,18 @@ class GameSyncControllerTest {
         GameContext gameContext = new GameContext();
         gameContext.prepare(user);
         CardsController.GAME_ROOM.put(0,gameContext);
-        CardsController.GAME_ROOM.put(0,gameContext);
-        gameSyncController.setUserService(userService);
+
 
     }
-
     @Test
     void testOnOpen() {
         // Setup
-        given(userService.getUserByToken("1")).willReturn(user);
-
-        gameSyncController.onOpen(null,"1",0);
-        // Verify the results
-    }
-
-    @Test
-    void testOnClose() {
-        // Setup
+        Session session = null;
         // Run the test
-
-        // Verify the results
+        roomSyncUnderTest.onOpen(session, "token");
+        roomSyncUnderTest.push();
+        assertNotNull(roomSyncUnderTest.getToken());
     }
+
+
 }
