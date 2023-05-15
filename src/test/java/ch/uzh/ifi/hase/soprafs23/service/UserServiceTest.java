@@ -1,9 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.controller.UserController;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.model.UserReqVo;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,41 +14,39 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @Slf4j
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserServiceTest {
+@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+class UserServiceTest {
+    @Autowired
+    private UserService userService;
+
+    private User user;
+
+    public static final AtomicInteger add= new AtomicInteger();
 
 
-  @Autowired
-  private UserService userService;
-
-  private  User user;
-
-  public static final AtomicInteger add= new AtomicInteger();
-
-
-  @BeforeEach
-  public void setup() {
-      if(Objects.nonNull(user)){
-          return;
-      }
+    @BeforeEach
+    public void setup() {
+        if(Objects.nonNull(user)){
+            return;
+        }
         int i = add.get();
         user = new User();
-      user.setName("Firstname Lastname"+i);
-      user.setUsername("firstname@lastname"+i);
-      user.setPassword("firstname@123"+i);
-      user.setStatus(UserStatus.OFFLINE);
-      try {
-        user =  userService.createUser(user);
-      }catch (Exception e){
-          log.info(e.getMessage());
-      }
+        user.setName("Firstname Lastname"+i);
+        user.setUsername("firstname@lastname"+i);
+        user.setPassword("firstname@123"+i);
+        user.setStatus(UserStatus.OFFLINE);
+        try {
+            user =  userService.createUser(user);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
 
-      assertNotNull(user.getToken());
-  }
+        assertNotNull(user.getToken());
+    }
 
     @Test
     @DirtiesContext
@@ -62,7 +60,7 @@ public class UserServiceTest {
 
     @Test
     @DirtiesContext
-    public void testFindUserByToken() {
+    public void testGetUserByToken() {
 
         User found = userService.getUserByToken(user.getToken());
         assertNotNull(found.getId());
@@ -72,16 +70,15 @@ public class UserServiceTest {
         assertEquals(found.getStatus(), user.getStatus());
     }
 
-
-  @Test
-  @DirtiesContext
-  public void testUpdatePassword() {
-      UserReqVo userReqVo = new UserReqVo();
-      userReqVo.setPassword("123@123");
-      userReqVo.setRepeatPassword("123@123");
-      User newUser = userService.updatePassword(userReqVo,user);
-      assertEquals(newUser.getPassword(), userReqVo.getPassword());
-  }
+    @Test
+    @DirtiesContext
+    public void testUpdatePassword(){
+        UserReqVo userReqVo = new UserReqVo();
+        userReqVo.setPassword("123@123");
+        userReqVo.setRepeatPassword("123@123");
+        User newUser = userService.updatePassword(userReqVo, user);
+        assertEquals(newUser.getPassword(), userReqVo.getPassword());
+    }
 
     @Test
     @DirtiesContext
@@ -97,19 +94,6 @@ public class UserServiceTest {
 
     @Test
     @DirtiesContext
-
-    public void testOffline() {
-        UserReqVo userReqVo = new UserReqVo();
-        userReqVo.setName("nweName");
-
-        userService.offline(user);
-        User userByToken = userService.getUserByToken(user.getToken());
-        assertEquals(userByToken.getStatus(), UserStatus.OFFLINE);
-    }
-
-    @Test
-    @DirtiesContext
-
     public void testCreateUser(){
         user = new User();
         user.setName("Firstname Lastname");
@@ -128,4 +112,42 @@ public class UserServiceTest {
         try {
             user =  userService.createUser(user);
         }catch (Exception e){}    }
+
+    @Test
+    @DirtiesContext
+    public void testOffline(){
+        UserReqVo userReqVo = new UserReqVo();
+        userReqVo.setName("rename");
+
+        userService.offline(user);
+        User userByToken = userService.getUserByToken(user.getToken());
+        assertEquals(userByToken.getStatus(), UserStatus.OFFLINE);
+
+    }
+
+    @Test
+    public void testUpdatePassword_ThrowsExceptionWhenPasswordsAreDifferent() {
+        // Create test data
+        UserReqVo userReqVo = new UserReqVo();
+        userReqVo.setPassword("newPassword");
+        userReqVo.setRepeatPassword("differentPassword");
+
+        User oldUser = new User();
+        oldUser.setId(1);
+        oldUser.setPassword("oldPassword");
+
+
+        // Define the expected exception
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            // Call the method under test
+            userService.updatePassword(userReqVo, oldUser);
+        });
+
+        // Check if the message of the exception is as expected
+        String expectedMessage = "The password is different!";
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+
 }

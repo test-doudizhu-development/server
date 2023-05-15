@@ -72,10 +72,10 @@ bootJar {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "test-doudizhu-development_server"
-        property "sonar.organization", "test-doudizhu-development"
+        property "sonar.projectKey", "sopra-fs23-group-21_sopra-fs23-group-21-server"
+        property "sonar.organization", "sopra-fs23-group-21"
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.projectName", "server"
+        property "sonar.projectName", "sopra-fs23-group-21-server"
         property "sonar.projectVersion", "1.0"
 
     }

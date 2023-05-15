@@ -2,8 +2,6 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.config.WebSocketConfigOne;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs23.controller.CardsController;
-import ch.uzh.ifi.hase.soprafs23.controller.RoomSync;
 import ch.uzh.ifi.hase.soprafs23.core.GameContext;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,17 +15,22 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+
+
+
+
+
 @WebMvcTest(RoomSync.class)
 class RoomSyncTest {
-
     private RoomSync roomSyncUnderTest;
 
     @BeforeEach
-    void setUp() {
+    void setUp(){
         roomSyncUnderTest = new RoomSync();
         roomSyncUnderTest.setToken("1");
 
     }
+
     User user;
     @BeforeEach
     public void initUser(){
@@ -54,6 +57,4 @@ class RoomSyncTest {
         roomSyncUnderTest.push();
         assertNotNull(roomSyncUnderTest.getToken());
     }
-
-
 }
